@@ -8,8 +8,13 @@ url = "https://www.youtube.com/watch?v={video_id}"
 
 transcript = YouTubeTranscriptApi.get_transcript(video_id)
 
+# Create the "transcripts" directory if it doesn't exist
+transcripts_dir = 'transcripts'
+if not os.path.exists(transcripts_dir):
+  os.makedirs(transcripts_dir)
+
 # Create a new transcript file
-transcript_file = f'{video_id}_transcript.txt'
+transcript_file = f'{transcripts_dir}/{video_id}_transcript.txt'
 open(transcript_file, 'w').close()
 
 # Write the transcript to the file
@@ -33,7 +38,7 @@ for blurb in transcript:
   print(f"{timeStampString}: {blurb['text']}")
   print(f"(Time Gap: {round(timeGap)}s)\n\n")
 
-  with open(f'{video_id}_transcript.txt', 'a') as file:
+  with open(f'transcripts/{video_id}_transcript.txt', 'a') as file:
     file.write(f"{timeStampString}: {blurb['text']}\n")
     file.write(f"(Time Gap: {round(timeGap)}s)\n\n")
 
