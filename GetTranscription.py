@@ -4,6 +4,8 @@ import os
 
 video_id = sys.argv[1]
 
+video_id = video_id.split("watch?v=")[-1]
+
 url = "https://www.youtube.com/watch?v={video_id}"
 
 transcript = YouTubeTranscriptApi.get_transcript(video_id)
