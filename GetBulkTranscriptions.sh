@@ -53,5 +53,6 @@ youtube_urls=(
 # Iterate over the array
 for url in "${youtube_urls[@]}"
 do
+    echo "Processing $url"
     python GetTranscription.py -u "$url"
 done
