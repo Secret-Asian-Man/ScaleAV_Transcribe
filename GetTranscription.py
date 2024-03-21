@@ -1,23 +1,45 @@
-from youtube_transcript_api import YouTubeTranscriptApi
-import sys
+import argparse
 import os
+from youtube_transcript_api import YouTubeTranscriptApi
+from pytube import YouTube
+from pytube import extract
 
-video_id = sys.argv[1]
+# Create an argument parser
+parser = argparse.ArgumentParser(description='Get YouTube video transcript')
 
-video_id = video_id.split("watch?v=")[-1]
+# Add a verbose argument
+parser.add_argument('-v', '--verbose', action='store_true', help='Enable verbose output')
+parser.add_argument('-u', '--url', required=True, help='Input YouTube video URL')
 
-url = "https://www.youtube.com/watch?v={video_id}"
+# Parse the command line arguments
+args = parser.parse_args()
+
+url = args.url
+video_id = None
+
+if "youtube.com" in url:
+  video_id = extract.video_id(url)
+else:
+  video_id = url
+  url = f"https://www.youtube.com/watch?v={url}"
+
+video = YouTube(url)
+rawTitle = title = video.title
+
+# Process title
+title = title.replace(" ", "")
+title = title.replace(".", "-")
 
 transcript = YouTubeTranscriptApi.get_transcript(video_id)
 
 # Create the "transcripts" directory if it doesn't exist
-transcripts_dir = 'transcripts'
-if not os.path.exists(transcripts_dir):
-  os.makedirs(transcripts_dir)
+transcriptsDir = 'transcripts'
+if not os.path.exists(transcriptsDir):
+  os.makedirs(transcriptsDir)
 
 # Create a new transcript file
-transcript_file = f'{transcripts_dir}/{video_id}_transcript.txt'
-open(transcript_file, 'w').close()
+transcriptFile = f'{transcriptsDir}/{title}_transcript.txt'
+open(transcriptFile, 'w').close()
 
 # Write the transcript to the file
 timeGaps = []
@@ -37,16 +59,18 @@ for blurb in transcript:
   if timeGap > 300: # 5 minutes
     timeGaps.append(f"{timeStampString}: {round(timeGap)}s")
   
-  print(f"{timeStampString}: {blurb['text']}")
-  print(f"(Time Gap: {round(timeGap)}s)\n\n")
+  if args.verbose:
+    print(f"{timeStampString}: {blurb['text']}")
+    print(f"(Time Gap: {round(timeGap)}s)\n\n")
 
-  with open(f'transcripts/{video_id}_transcript.txt', 'a') as file:
+  with open(transcriptFile, 'a') as file:
     file.write(f"{timeStampString}: {blurb['text']}\n")
     file.write(f"(Time Gap: {round(timeGap)}s)\n\n")
 
 # Append timeGaps to the beginning of the file
-with open(transcript_file, 'r+') as file:
+with open(transcriptFile, 'r+') as file:
   content = file.read()
   file.seek(0, 0)
-  file.write(f"Large Time Gaps: {timeGaps}\n\n")
+  file.write(f"{rawTitle}\n\n")
+  file.write(f"Large Time Gaps: {timeGaps}\n\n\n\n")
   file.write(content)

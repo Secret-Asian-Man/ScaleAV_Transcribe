@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# Declare an array of YouTube URLs
+youtube_urls=(
+    "https://www.youtube.com/watch?v=BqDnTQlnVs8"
+    "https://www.youtube.com/watch?v=ljHjSvSy1AY"
+    "https://www.youtube.com/watch?v=7iXKVD2RtLk"
+    "https://www.youtube.com/watch?v=nfSq28Zo78Q"
+    "https://www.youtube.com/watch?v=yMzS7vUz0PM"
+    "https://www.youtube.com/watch?v=S_hCsOIpAnQ"
+    "https://www.youtube.com/watch?v=twP0V0SjKbc"
+    "https://www.youtube.com/watch?v=q_sfdAFVIL8"
+    "https://www.youtube.com/watch?v=G2uN7cw-PaU"
+    "https://www.youtube.com/watch?v=NrSbhmDUEII"
+    "https://www.youtube.com/watch?v=SjL7_oWFgVQ"
+    "https://www.youtube.com/watch?v=xU4nHHdyriA"
+    "https://www.youtube.com/watch?v=ru5QA16gIZk"
+    "https://www.youtube.com/watch?v=gZDAwY87kxA"
+    "https://www.youtube.com/watch?v=peTlWJGNfYk"
+    "https://www.youtube.com/watch?v=WUYMVuurHaA"
+    "https://www.youtube.com/watch?v=1J6jA1_ukt8"
+    "https://www.youtube.com/watch?v=EHwwzwkPpLg"
+    "https://www.youtube.com/watch?v=JJk_-pkrQBQ"
+    "https://www.youtube.com/watch?v=taCfCNb2p1k"
+    "https://www.youtube.com/watch?v=4hD0e4a5Ky0"
+    "https://www.youtube.com/watch?v=S6mtzEULvAQ"
+    "https://www.youtube.com/watch?v=4_yXASzwM-g"
+    "https://www.youtube.com/watch?v=IH5ecVVlbcM"
+    "https://www.youtube.com/watch?v=D2hTzmYGE0s"
+    "https://www.youtube.com/watch?v=_q8BfAmKxYc"
+    "https://www.youtube.com/watch?v=AfrFsDN-WZ4"
+    "https://www.youtube.com/watch?v=dDxYkc-DZkE"
+    "https://www.youtube.com/watch?v=SfAJ6CHObds"
+    "https://www.youtube.com/watch?v=LarcrKqXxXI"
+    "https://www.youtube.com/watch?v=Ypievv_gmcg"
+    "https://www.youtube.com/watch?v=ga94Ye7dCrE"
+    "https://www.youtube.com/watch?v=bxdoMdwbZ7s"
+    "https://www.youtube.com/watch?v=mbx2XfTlY7k"
+    "https://www.youtube.com/watch?v=OqfW8MPu_v4"
+    "https://www.youtube.com/watch?v=jLjFwBZxJMs"
+    "https://www.youtube.com/watch?v=6CBO3kdTB7g"
+    "https://www.youtube.com/watch?v=D9ZKiWWoTFg"
+    "https://www.youtube.com/watch?v=IvVHYo74UMQ"
+    "https://www.youtube.com/watch?v=D3K_yZiwp_c"
+    "https://www.youtube.com/watch?v=jNpDoBdjPek"
+    "https://www.youtube.com/watch?v=kl7MYa54UX0"
+    "https://www.youtube.com/watch?v=zhsoit3FlZE"
+    "https://www.youtube.com/watch?v=eVkB-5I1dUE"
+    "https://www.youtube.com/watch?v=V_sqiff41gs"
+    
+)
+
+# Iterate over the array
+for url in "${youtube_urls[@]}"
+do
+    python GetTranscription.py -u "$url"
+done
