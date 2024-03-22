@@ -4,6 +4,8 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from pytube import YouTube
 from pytube import extract
 
+SILENCE_THRESHOLD = 300 # 5 minutes
+
 # Create an argument parser
 parser = argparse.ArgumentParser(description='Get YouTube video transcript')
 
@@ -44,11 +46,14 @@ open(transcriptFile, 'w').close()
 # Write the transcript to the file
 timeGaps = []
 prevTime = 0
+prevBlurb = ""
 for blurb in transcript:
-  if len(blurb['text']) == 1:
+  if blurb['text'] == prevBlurb:
     continue
 
   timeGap = blurb['start'] - prevTime
+
+  prevBlurb = blurb['text']
   prevTime = timeStamp = blurb['start']
 
   hours, remainder = divmod(timeStamp, 3600)
@@ -56,21 +61,28 @@ for blurb in transcript:
 
   timeStampString = f"{int(hours):02d}:{int(minutes):02d}:{int(seconds):02d}"
 
-  if timeGap > 300: # 5 minutes
+  if timeGap > SILENCE_THRESHOLD: # 5 minutes
     timeGaps.append(f"{timeStampString}: {round(timeGap)}s")
   
   if args.verbose:
-    print(f"{timeStampString}: {blurb['text']}")
-    print(f"(Time Gap: {round(timeGap)}s)\n\n")
+    if timeGap > SILENCE_THRESHOLD: # 5 minutes
+      print(f"\n\n(Time Gap: {round(timeGap)}s)\n\n\n")
+    print(f"{timeStampString} {blurb['text']}")
 
   with open(transcriptFile, 'a') as file:
-    file.write(f"{timeStampString}: {blurb['text']}\n")
-    file.write(f"(Time Gap: {round(timeGap)}s)\n\n")
+    if timeGap > SILENCE_THRESHOLD: # 5 minutes
+      file.write(f"\n\n(Time Gap: {round(timeGap)}s)\n\n\n")
+    file.write(f"{timeStampString}\t{blurb['text']}\n")
 
 # Append timeGaps to the beginning of the file
 with open(transcriptFile, 'r+') as file:
   content = file.read()
   file.seek(0, 0)
-  file.write(f"{rawTitle}\n\n")
-  file.write(f"Large Time Gaps: {timeGaps}\n\n\n\n")
+  file.write(f"{rawTitle}\n")
+  file.write(f"{url}\n\n")
+  file.write(f"Large Time Gaps:\n")
+  for gap in timeGaps:
+    file.write(f"{gap}\n")
+  file.write("--------------------------------------------------")
+  file.write("\n\n\n\n")
   file.write(content)
