@@ -62,17 +62,17 @@ for blurb in transcript:
   timeStampString = f"{int(hours):02d}:{int(minutes):02d}:{int(seconds):02d}"
 
   if timeGap > SILENCE_THRESHOLD: # 5 minutes
-    timeGaps.append(f"{timeStampString}: {round(timeGap)}s")
+    timeGaps.append(f"{timeStampString}\t|\t{round(timeGap)}s\n")
   
   if args.verbose:
     if timeGap > SILENCE_THRESHOLD: # 5 minutes
-      print(f"\n\n(Time Gap: {round(timeGap)}s)\n\n\n")
-    print(f"{timeStampString} {blurb['text']}")
+      print(f"\n\n----------(Time Gap: {round(timeGap)}s)----------\n\n\n\n")
+    print(f"{timeStampString} {blurb['text']}\n\n")
 
   with open(transcriptFile, 'a') as file:
     if timeGap > SILENCE_THRESHOLD: # 5 minutes
-      file.write(f"\n\n(Time Gap: {round(timeGap)}s)\n\n\n")
-    file.write(f"{timeStampString}\t{blurb['text']}\n")
+      file.write(f"\n\n----------(Time Gap: {round(timeGap)}s)----------\n\n\n\n")
+    file.write(f"{timeStampString}\t{blurb['text']}\n\n")
 
 # Append timeGaps to the beginning of the file
 with open(transcriptFile, 'r+') as file:
@@ -80,9 +80,10 @@ with open(transcriptFile, 'r+') as file:
   file.seek(0, 0)
   file.write(f"{rawTitle}\n")
   file.write(f"{url}\n\n")
-  file.write(f"Large Time Gaps:\n")
+  file.write("-----------------Large Time Gaps------------------\n")
+  file.write("\t\t\tTimestamp\t|\tLength\n")
   for gap in timeGaps:
-    file.write(f"{gap}\n")
+    file.write(f"\t\t\t{gap}")
   file.write("--------------------------------------------------")
   file.write("\n\n\n\n")
   file.write(content)
